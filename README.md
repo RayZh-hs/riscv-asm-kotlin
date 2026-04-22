@@ -94,8 +94,33 @@ M-extension instructions are rejected when the target does not include
 
 ## Build
 
-This repository uses the Gradle wrapper with the Kotlin JVM plugin:
+This repository uses the Gradle wrapper with the Kotlin JVM plugin. The Gradle
+runtime should be Java 21 or another Java 17+ runtime because the Maven Central
+publishing plugin requires it; the published library remains JVM 8 compatible.
 
 ```sh
 ./gradlew test
 ```
+
+## Publishing
+
+The project publishes as `space.norb:riscv-asm-kotlin`.
+
+For local development, publish to the local Maven cache:
+
+```sh
+./gradlew publishToMavenLocal
+```
+
+If you use `mise`, the same workflows are available as tasks:
+
+```sh
+mise trust
+mise run publish-local
+mise run publish-central
+mise run publish-snapshot
+```
+
+Maven Central publishing uses the Central Portal credentials from
+`MAVEN_CENTRAL_USERNAME` and `MAVEN_CENTRAL_PASSWORD`, and signs release
+artifacts with the local `gpg` command.
