@@ -117,10 +117,4 @@ If you use `mise`, the same workflows are available as tasks:
 ```sh
 mise trust
 mise run publish-local
-mise run publish-central
-mise run publish-snapshot
 ```
-
-Maven Central publishing uses the Central Portal credentials from
-`MAVEN_CENTRAL_USERNAME` and `MAVEN_CENTRAL_PASSWORD`, and signs release
-artifacts with the local `gpg` command.
