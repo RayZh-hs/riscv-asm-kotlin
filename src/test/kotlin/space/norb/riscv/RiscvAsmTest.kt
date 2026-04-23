@@ -95,4 +95,107 @@ class RiscvAsmTest {
             }
         }
     }
+
+    @Test
+    fun rendersMissingDirectives() {
+        val program = riscv {
+            rodata()
+            sdata()
+            sbss()
+            zero(8)
+        }
+
+        assertEquals(
+            """
+            |    .section .rodata
+            |    .section .sdata
+            |    .section .sbss
+            |    .zero 8
+            |
+            """.trimMargin(),
+            program.render(),
+        )
+    }
+
+    @Test
+    fun rendersLoadStorePseudoInstructions() {
+        val program = riscv {
+            lb(a0, "symbol")
+            lh(a1, "symbol")
+            lw(a2, "symbol")
+            sb(a0, "symbol", t0)
+            sh(a1, "symbol", t0)
+            sw(a2, "symbol", t0)
+        }
+
+        assertEquals(
+            """
+            |    lb a0, symbol
+            |    lh a1, symbol
+            |    lw a2, symbol
+            |    sb a0, symbol, t0
+            |    sh a1, symbol, t0
+            |    sw a2, symbol, t0
+            |
+            """.trimMargin(),
+            program.render(),
+        )
+    }
+
+    @Test
+    fun loadPseudoInstructionsAcceptAsmOperands() {
+        val program = riscv {
+            lb(a0, expr("arr"))
+            lh(a1, expr("arr + 2"))
+            lw(a2, labelRef("arr"))
+        }
+
+        assertEquals(
+            """
+            |    lb a0, arr
+            |    lh a1, arr + 2
+            |    lw a2, arr
+            |
+            """.trimMargin(),
+            program.render(),
+        )
+    }
+
+    @Test
+    fun storePseudoInstructionsAcceptAsmOperands() {
+        val program = riscv {
+            sb(a0, expr("arr"), t0)
+            sh(a1, expr("arr + 2"), t0)
+            sw(a2, labelRef("arr"), t0)
+        }
+
+        assertEquals(
+            """
+            |    sb a0, arr, t0
+            |    sh a1, arr + 2, t0
+            |    sw a2, arr, t0
+            |
+            """.trimMargin(),
+            program.render(),
+        )
+    }
+
+    @Test
+    fun baseLoadInstructionsStillResolveCorrectly() {
+        val program = riscv {
+            lb(a0, sp[0])
+            lh(a1, sp[2])
+            lw(a2, sp[4])
+        }
+
+        assertEquals(
+            """
+            |    lb a0, 0(sp)
+            |    lh a1, 2(sp)
+            |    lw a2, 4(sp)
+            |
+            """.trimMargin(),
+            program.render(),
+        )
+    }
 }

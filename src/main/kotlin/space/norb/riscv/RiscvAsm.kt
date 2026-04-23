@@ -66,6 +66,18 @@ public class RiscvAsm(public val target: RiscvTarget = RiscvTarget.RV32IM) {
         section(".bss")
     }
 
+    public fun rodata() {
+        section(".rodata")
+    }
+
+    public fun sdata() {
+        section(".sdata")
+    }
+
+    public fun sbss() {
+        section(".sbss")
+    }
+
     public fun global(symbol: String) {
         directive(".globl", expr(symbol))
     }
@@ -128,6 +140,11 @@ public class RiscvAsm(public val target: RiscvTarget = RiscvTarget.RV32IM) {
     public fun space(bytes: Int) {
         require(bytes >= 0) { "Space directive byte count must be non-negative, got $bytes." }
         directive(".space", imm(bytes))
+    }
+
+    public fun zero(bytes: Int) {
+        require(bytes >= 0) { "Zero directive byte count must be non-negative, got $bytes." }
+        directive(".zero", imm(bytes))
     }
 
     public fun equ(symbol: String, value: Int) {
@@ -264,6 +281,30 @@ public class RiscvAsm(public val target: RiscvTarget = RiscvTarget.RV32IM) {
         load("lhu", rd, address)
     }
 
+    public fun lb(rd: Register, symbol: AsmOperand) {
+        emit("lb", rd, symbol)
+    }
+
+    public fun lb(rd: Register, symbol: String) {
+        lb(rd, expr(symbol))
+    }
+
+    public fun lh(rd: Register, symbol: AsmOperand) {
+        emit("lh", rd, symbol)
+    }
+
+    public fun lh(rd: Register, symbol: String) {
+        lh(rd, expr(symbol))
+    }
+
+    public fun lw(rd: Register, symbol: AsmOperand) {
+        emit("lw", rd, symbol)
+    }
+
+    public fun lw(rd: Register, symbol: String) {
+        lw(rd, expr(symbol))
+    }
+
     public fun sb(rs2: Register, address: Address) {
         store("sb", rs2, address)
     }
@@ -274,6 +315,30 @@ public class RiscvAsm(public val target: RiscvTarget = RiscvTarget.RV32IM) {
 
     public fun sw(rs2: Register, address: Address) {
         store("sw", rs2, address)
+    }
+
+    public fun sb(rs: Register, symbol: AsmOperand, rt: Register) {
+        emit("sb", rs, symbol, rt)
+    }
+
+    public fun sb(rs: Register, symbol: String, rt: Register) {
+        sb(rs, expr(symbol), rt)
+    }
+
+    public fun sh(rs: Register, symbol: AsmOperand, rt: Register) {
+        emit("sh", rs, symbol, rt)
+    }
+
+    public fun sh(rs: Register, symbol: String, rt: Register) {
+        sh(rs, expr(symbol), rt)
+    }
+
+    public fun sw(rs: Register, symbol: AsmOperand, rt: Register) {
+        emit("sw", rs, symbol, rt)
+    }
+
+    public fun sw(rs: Register, symbol: String, rt: Register) {
+        sw(rs, expr(symbol), rt)
     }
 
     public fun addi(rd: Register, rs1: Register, imm: Int) {
