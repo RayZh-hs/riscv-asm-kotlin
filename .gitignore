@@ -6,3 +6,6 @@ out/
 *.war
 *.ear
 *.log
+
+# Ignore local configuration files
+mise.local.toml
